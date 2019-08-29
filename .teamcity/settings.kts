@@ -27,18 +27,24 @@ version = "2019.1"
 
 project {
 
-    buildType(Build)
+    sequence {
+        parallel {
+            sequence {
+                build(Restore) {
+                    produces("**/*")
+                 }
+                 build(Build) {
+                    requires(Restore, "**/*")
+                 }
+            }
+        }
+    }
 }
+
+object Restore : BuildType({
+    name = "Restore"
+})
 
 object Build : BuildType({
     name = "Build"
-
-    vcs {
-        root(DslContext.settingsRoot)
-    }
-
-    triggers {
-        vcs {
-        }
-    }
 })
